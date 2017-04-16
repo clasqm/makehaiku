@@ -1,0 +1,35 @@
+sub structure5()
+	local a$, b$, c$, d$
+	//Haiku structure:
+	//5 verbverb advadvadv
+	//7 adjadjadj nounnouns verbverb
+	//5 nounnounnounnounnoun
+
+	//first line
+	restore twosyllableverbsplural
+	a$ = a$ + getdata$() + " "
+	left$(a$, 1) = upper$(left$(a$, 1))
+	restore threesyllableadverbs
+	a$ = a$ + getdata$() + "\n"
+	
+	//second line
+	restore threesyllableadjectives
+	b$=getdata$() + " "
+	left$(b$, 1) = upper$(left$(b$, 1))
+	restore  twosyllablenounsplural
+	b$ = b$ + getdata$() + " "
+	restore twosyllableverbsplural
+	b$ = b$ + getdata$() + "\n"
+
+	//third line
+	restore fivesyllablenouns
+	c$=getdata$() + "."
+	left$(c$, 1) = upper$(left$(c$, 1))
+
+	//concatenate	
+	d$= a$ + b$ + c$
+	print d$
+	
+	end
+end sub
+

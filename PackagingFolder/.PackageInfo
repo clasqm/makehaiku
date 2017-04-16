@@ -1,0 +1,29 @@
+name				makehaiku
+version				0.1-7
+architecture			x86_gcc2
+
+summary			"A CLI utility that writes haiku poetry"
+Description			"The thought struck me ... an OS called Haiku should be able to ... write a haiku.
+
+So I slapped together a CLI utility along the lines of fortune. No deep semantic analysis involved, I'm afraid, just a rearrangement of words in the required 5 - 7 - 5 syllable patterns. Occasionally it sounds as if there is a poet inside the computer trying to break out. Far more often, it looks like the computer is populated by Vogons. But it is a haiku. You can pipe the output like any self-respecting *NIX utility.
+
+That was easy enough. What is taking up time is adding sufficient words to its database to prevent the haikus becoming repetitious. This version is about two-thirds through the alphabet.
+
+I haven't tried it yet, but the code should work in yabasic for Windows or Linux.
+"
+
+packager			"clasqm <clasqm@gmail.com>"
+vendor				"clasqm"
+copyrights			"2015 clasqm <clasqm@gmail.com>"
+licenses				"Public Domain"
+provides {
+					makehaiku = 0.1-7
+					cmd:makehaiku
+}
+requires {
+					haiku>=r1~alpha4_pm_hrev50032-1
+					yab>=1.7.5.3
+}
+urls {
+				http://clasquin-johnson.co.za/michel/haiku
+}

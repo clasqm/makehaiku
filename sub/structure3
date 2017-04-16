@@ -1,0 +1,39 @@
+sub structure3()
+	local a$, b$, c$, d$
+	//Haiku structure:
+	//5 adj nounnouns verbverb
+	//7 But do the nounnouns verbverb?
+	//5 nounnouns verb advadv
+
+	//first line
+	restore onesyllableadjectives
+	a$ = getdata$() + " "
+	left$(a$, 1) = upper$(left$(a$, 1))
+	restore twosyllablenounsplural
+	a$ = a$ + getdata$() + " "
+	restore twosyllableverbsplural
+	a$ = a$ + getdata$() + "\n"
+	
+	//second line
+	b$="But do the "
+	restore twosyllablenounsplural
+	b$ = b$ + getdata$() + " "
+	restore twosyllableverbsplural
+	b$ = b$ + getdata$() + "?\n"
+
+	//third line
+	restore twosyllablenounsplural
+	c$ = getdata$() + " "
+	left$(c$, 1) = upper$(left$(c$, 1))
+	restore onesyllableverbsplural
+	c$ = c$ + getdata$() + " "
+	restore twosyllableadverbs
+	c$ = c$ + getdata$() + "."
+
+	//concatenate	
+	d$= a$ + b$ + c$
+	print d$
+	
+	end
+end sub
+

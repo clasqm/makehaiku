@@ -1,0 +1,16 @@
+sub getdata$()
+	local a$, z$(1), counter, tempval
+		counter =1
+		while(true)
+			read a$: if a$ = "_endofdata_" break
+			z$(counter) = a$
+			counter = counter +1
+			dim z$(counter)
+		wend
+		counter = arraysize(z$(),1)
+		tempval=RandInt()/32767
+		counter = tempval * counter: counter = int(counter)
+		if counter = 0 counter = 1
+		a$ = z$(counter): return a$ 
+end sub
+

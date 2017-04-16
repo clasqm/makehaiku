@@ -1,0 +1,20 @@
+sub givehelp()
+	ProgramName$ = "makehaiku"
+	AuthorName$ = "Michel Clasquin-Johnson <clasqm@gmail.com>"
+	ProgramVersion$ = "v0.1"
+	ProgramLicense$ = "Public Domain Software"
+	ProgramBriefDescription$ = "A haiku generator for Haiku OS"
+	ProgramHelpText$ = "DailyHaiku will generate haiku poems according to a randomly-selected syllable\npattern. The generated haiku is printed to standard output, which is\nGeekish for the Terminal, but it can be piped to other programs. Try putting the\nfollowing command in /boot/home/config/settings/boot/UserBootscript:\n\n alert \"`makehaiku`\""
+	ProgramLicense$ = "Public Domain Software"
+	
+	print ProgramName$ + "    " + ProgramVersion$
+	print "by " + AuthorName$
+	print ProgramBriefDescription$
+	print
+	print ProgramHelpText$
+	print
+	print ProgramLicense$
+	print
+	end
+end sub
+

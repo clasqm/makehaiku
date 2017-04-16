@@ -1,0 +1,761 @@
+#!yab
+############# Prologue #############
+
+ 
+//*****Global Variables****
+ 
+DEBUG = 0
+counter =1 
+ 
+######Preliminary Commands#####
+if peek("argument") <> 0 givehelp()
+if peek$("refsreceived") <> "" givehelp()
+if peek("argument") <> 0 then
+	givehelp()
+endif
+
+whichstruct = RandInt0To9()
+switch whichstruct
+	case 0
+	case 1
+		structure1()
+		break
+	case 2
+	case 3
+		structure2()
+		break
+	case 4
+	case 5
+		structure3()
+		break
+	case 6
+	case 7
+		structure4()
+		break
+	case 8
+	case 9
+		structure5()
+		break
+end switch
+
+sub getdata$()
+	local a$, z$(1), counter, tempval
+		counter =1
+		while(true)
+			read a$: if a$ = "_endofdata_" break
+			z$(counter) = a$
+			counter = counter +1
+			dim z$(counter)
+		wend
+		counter = arraysize(z$(),1)
+		tempval=RandInt()/32767
+		counter = tempval * counter: counter = int(counter)
+		if counter = 0 counter = 1
+		a$ = z$(counter): return a$ 
+end sub
+
+sub givehelp()
+	ProgramName$ = "makehaiku"
+	AuthorName$ = "Michel Clasquin-Johnson <clasqm@gmail.com>"
+	ProgramVersion$ = "v0.1"
+	ProgramLicense$ = "Public Domain Software"
+	ProgramBriefDescription$ = "A haiku generator for Haiku OS"
+	ProgramHelpText$ = "DailyHaiku will generate haiku poems according to a randomly-selected syllable\npattern. The generated haiku is printed to standard output, which is\nGeekish for the Terminal, but it can be piped to other programs. Try putting the\nfollowing command in /boot/home/config/settings/boot/UserBootscript:\n\n alert \"`makehaiku`\""
+	ProgramLicense$ = "Public Domain Software"
+	
+	print ProgramName$ + "    " + ProgramVersion$
+	print "by " + AuthorName$
+	print ProgramBriefDescription$
+	print
+	print ProgramHelpText$
+	print
+	print ProgramLicense$
+	print
+	end
+end sub
+
+sub RandInt()
+	//returns a random integer between 0 and 32767
+	a = val(system$("echo $RANDOM"))
+	return a
+end sub
+
+sub RandInt0To9()
+	//returns a random integer between 0 and 9, inclusive
+	a=val(mid$(time$, 8,1))
+	return a
+end sub
+
+sub structure1()
+	local a$, b$, c$, d$
+	//Haiku structure:
+	//5 A nounnoun verbverbs
+	//7 adjadj nounnouns verb advadv
+	//5 the nounnoun verbverbs
+	
+	//first line
+	restore  twosyllablenouns
+	a$ = getdata$()
+	//decide A or An
+	switch left$(a$, 1)
+		case "a"
+		case "e"
+		case "i"
+		case "o"
+		case "u"
+		a$ = "An " + a$ + " "
+		break
+		default
+		a$ = "A " + a$ + " "
+		break
+	end switch
+	restore twosyllableverbs
+	a$ = a$ + getdata$() + "\n"
+	
+	// second line
+	restore twosyllableadjectives
+	b$ = getdata$() + " "
+	left$(b$, 1) = upper$(left$(b$, 1))
+	restore twosyllablenounsplural
+	b$ = b$ + getdata$() + " "
+	restore onesyllableverbsplural
+	b$ = b$ + getdata$() + " "
+	restore twosyllableadverbs
+	b$ = b$ + getdata$()+ "\n"
+	
+	//third line 
+	c$ = "The " 
+	restore  twosyllablenouns
+	c$ = c$ + getdata$() + " "
+	restore twosyllableverbs
+	c$ = c$ + getdata$() + "."
+
+	//concatenate	
+	d$= a$ + b$ + c$
+	print d$
+	
+	end
+end sub
+
+sub structure2()
+	//Haiku structure
+	//5 nounnouns verbverbverb
+	//7 All the nounnouns verbverbverb
+	//5 I verb the nounnoun
+
+	//first line
+	restore  twosyllablenounsplural
+	a$= getdata$() + " "
+	left$(a$, 1) = upper$(left$(a$, 1))
+	restore threesyllableverbsplural
+	a$ = a$ + getdata$() + "\n"
+	
+	//second line
+	b$ = "All the "
+	restore  twosyllablenounsplural
+	b$= b$ + getdata$() + " "
+	restore threesyllableverbsplural
+	b$ = b$ + getdata$() + "\n"
+	
+	//third line
+	c$ = "I "
+	restore onesyllableverbsplural
+	c$= c$ + getdata$() + " the "
+	restore  twosyllablenouns
+	c$= c$ + getdata$() + "."
+	
+	//concatenate	
+	d$= a$ + b$ + c$
+	print d$
+	
+	end
+end sub
+
+sub structure3()
+	local a$, b$, c$, d$
+	//Haiku structure:
+	//5 adj nounnouns verbverb
+	//7 But do the nounnouns verbverb?
+	//5 nounnouns verb advadv
+
+	//first line
+	restore onesyllableadjectives
+	a$ = getdata$() + " "
+	left$(a$, 1) = upper$(left$(a$, 1))
+	restore twosyllablenounsplural
+	a$ = a$ + getdata$() + " "
+	restore twosyllableverbsplural
+	a$ = a$ + getdata$() + "\n"
+	
+	//second line
+	b$="But do the "
+	restore twosyllablenounsplural
+	b$ = b$ + getdata$() + " "
+	restore twosyllableverbsplural
+	b$ = b$ + getdata$() + "?\n"
+
+	//third line
+	restore twosyllablenounsplural
+	c$ = getdata$() + " "
+	left$(c$, 1) = upper$(left$(c$, 1))
+	restore onesyllableverbsplural
+	c$ = c$ + getdata$() + " "
+	restore twosyllableadverbs
+	c$ = c$ + getdata$() + "."
+
+	//concatenate	
+	d$= a$ + b$ + c$
+	print d$
+	
+	end
+end sub
+
+sub structure4()
+	local a$, b$, c$, d$
+	//Haiku structure:
+	//5 No nounnoun verbverbs
+	//7 We verbverbverb advadvadv
+	//5 verbverb advadvadv!
+	
+	//first line
+	a$="No "
+	restore  twosyllablenouns
+	a$ = a$ + getdata$() + " "
+	restore  twosyllableverbs
+	a$ = a$ + getdata$() + "\n"
+
+	//second line
+	b$="We "
+	restore  threesyllableverbsplural
+	b$ = b$ + getdata$() + " "
+	restore  threesyllableadverbs
+	b$ = b$ + getdata$() + "\n"
+
+	
+	//third line
+	restore  twosyllableverbsplural
+	c$ = c$ + getdata$() + " "
+	left$(c$, 1) = upper$(left$(c$, 1))
+	restore  threesyllableadverbs
+	c$ = c$ + getdata$() + "!"
+	
+
+	//concatenate	
+	d$= a$ + b$ + c$
+	print d$
+	
+	end
+end sub
+
+sub structure5()
+	local a$, b$, c$, d$
+	//Haiku structure:
+	//5 verbverb advadvadv
+	//7 adjadjadj nounnouns verbverb
+	//5 nounnounnounnounnoun
+
+	//first line
+	restore twosyllableverbsplural
+	a$ = a$ + getdata$() + " "
+	left$(a$, 1) = upper$(left$(a$, 1))
+	restore threesyllableadverbs
+	a$ = a$ + getdata$() + "\n"
+	
+	//second line
+	restore threesyllableadjectives
+	b$=getdata$() + " "
+	left$(b$, 1) = upper$(left$(b$, 1))
+	restore  twosyllablenounsplural
+	b$ = b$ + getdata$() + " "
+	restore twosyllableverbsplural
+	b$ = b$ + getdata$() + "\n"
+
+	//third line
+	restore fivesyllablenouns
+	c$=getdata$() + "."
+	left$(c$, 1) = upper$(left$(c$, 1))
+
+	//concatenate	
+	d$= a$ + b$ + c$
+	print d$
+	
+	end
+end sub
+
+########################################
+###DATA statements come here###
+########################################
+
+label twosyllablenouns
+data "abbess", "octant", "flashlight", "fleabag", "fledgling", "gelatin"
+data "teepee", "abbot", "olive","inchworm", "beanbag", "templar", "taboo", "gelding"
+data "aery", "adult", "adman", "adieu", "acne", "account", "accord"
+data "bravo", "brainstorm", "bloomer", "billfold", "beldam", "barhop", "baboon","berserk", "bighorn"
+data "curler", "creole", "cogwheel", "cocoon", "coalbin", "clover", "clamshell", "cinder", "chamber", "camshaft", "caliph", "caiman", "cabal"
+data "dyer", "dumbbell", "dualism", "draftee", "doughboy", "doctor", "dhoti", "demo", "decal", "deathbed", "deacon", "darling", "dabbler"
+data "entree", "ennui", "engram", "emu", "emir", "emcee", "ember", "eland", "eggnog", "effect", "eddy", "easel", "eagle"
+data "fastball", "fascist", "farthing", "farmyard", "farmer", "fantail", "fandom", "falcon", "fakir", "faker", "facet", "fabric", "fable"
+data "gabber", "gable", "gadfly", "gaggle", "galley", "galoot", "gambit", "gangster", "garnet", "garret", "gasbag", "gasket", "gaucho"
+data "habit", "hackman", "hackle", "hinge", "highland", "highball", "hickey", "herring", "heron", "hermit", "helmet", "hearsay", "headway"
+data "iambus", "ibex", "ibis", "ichor", "icon", "idea", "idler", "idol", "idyll", "igloo", "imam", "impact", "imprint"
+data "jabot", "jabbok", "jacinth", "jackal", "jackass", "jackdaw", "jacker", "jacket", "jackfish", "jackleg", "jackpot", "jackscrew", "jackstraw"
+data "kabob", "kaddish", "kaftan", "kaiser", "kalif", "kanji", "kansan", "kapok", "karma", "kayak", "kebab", "keeler", "keeper"
+data "laager", "label", "labour", "lacing", "lackey", "lacquer", "ladder", "ladle", "laggard", "lagoon", "laidlaw", "lama", "lambskin"
+data "mailbag", "maiden", "magpie", "magog", "magnet", "magma", "maggot", "madman", "madam", "macron", "macho", "macer", "macaw"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "quidnunc", "quizzer", "quiche", "quetzal", "quagga", "quaestor", "quadrant"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "wryneck", "wryness", "wurzel", "writher", "wombat", "witchcraft", "wigwam", "wholism", "wencher", "wainscot", "wainwright", "waitress", "waldorf"
+data "xylem", "xyster", "xmas", "xystus", "xerox", "xenon"
+data "yachtsman", "yardarm", "yearner", "yenta", "yucca", "yoghurt", "yippie", "yeti", "yearbook", "yankee", "yahoo"
+data "zodiac", "zendo", "zeitgeist", "zebra", "zazen"
+data "_endofdata_"
+
+label threesyllablenouns
+data "abacus", "abaser", "abattoir", "octangle", "flashforward", "zucchini"
+data "abalone", "zouave", "incense", "abdomen", "tsarina", "aberrants"
+data "amulet", "ambulator", "agouti", "affaire", "acolyte", "acacia", "abrader"
+data "bolshevik", "bluebonnet", "bloodsucker", "blockbuster", "blasphemer", "bivouac", "bachelor", "blackmailer", "beluga", "bellwether", "basement", "bacterium", "backslider"
+data "clematis", "catalyst", "catapult", "certainty", "christendom", "circumflex", "clavichord", "clingstone", "cowpuncher", "cryostat", "customer", "cypriot", "czarina"
+data "dynamo", "dunderhead", "duello", "draftsmanship", "doughtiness", "document", "diadem", "demigod", "decanter", "debauchee", "deaconess", "darwinist", "dakotan"
+data "engine", "encampment", "enabler", "emperor", "emerald", "embezzler", "electron", "elector", "egotist", "effendi", "editor", "earthquake", "earache"
+data "fetishist", "ferryboat", "felucca", "felony", "fellowman", "fellaheen", "feline", "featherweight", "featherbed", "faultfinder", "fatherland", "fatalism", "fastener"
+data "gazetteer", "gemstone", "general", "genesis", "gingersnap", "gigolo", "gigaton", "gigabit", "giantess", "ghostwriter", "germantown", "gentleman", "genteelness"
+data "hinderer", "homestead", "homeroom", "hologram", "hollowing", "hollander", "hoecake", "hobbyist", "hoarsening", "historian", "histamin", "hinterland", "hindquarter"
+data "imprinter", "improver", "impugner", "impulse", "inbreeder", "incense", "incisor", "incliner", "incloser", "increaser", "increment", "incubator", "incubus"
+data "jacobin", "jailbreaker", "jailkeeper", "jalopy", "jamaican", "jamboree", "janitor", "jansenist", "japanner", "javelin", "jawbreaker", "jaywalker", "jellybean"
+data "keratin", "kerygma", "kettledrum", "keypuncher", "keystroke", "khanate", "khedive", "kibitzer", "kidnapper", "kieselguhr", "kilobar", "kimono", "kinema"
+data "lamella", "lamenter", "lamplighter", "lampooner", "lampoonist", "lancelot", "landholder", "landlady", "landlubber", "landowner", "landscaper", "languisher", "laplander"
+data "mandolin", "mandarin", "manatee", "manager", "maligner", "maledict", "malcontent", "malayan", "malarkey", "malady", "maintainer", "mainframe", "mailwoman"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "quadruped", "quagmire", "qualifier", "quarterback", "quatrefoil", "quitrent", "quiote"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "woomera", "woolsorter", "winepress", "wickerwork", "whoreson", "whaleboat", "weregild", "weatherworm", "walkover", "wallflower", "wallower", "wanderlust", "warehouse"
+data "xylitol", "xylograph", "xylotomy", "xanthoma", "xenograft", "xenolith"
+data "yodeler", "yokemate", "yugoslav"
+data "zionist", "zitherist", "zoophobia", "zooplankton", "zucchetto", "zambian"
+data "_endofdata_"
+
+label fivesyllablenouns
+data "absentmindedness", "zoogeography", "hypochondriac","immorality", "impermanence"
+data "ambiguousness", "academicism", "censoriousness", "directorates", "disapprobation"
+data "anesthesia", "disarrangement", "deaccessioning", "eccentricities", "effeminacy", "anniversaries"
+data "absoluteness", "apocalypse", "acromegaly", "abstentionism", "abstemiousness"
+data "alliteration", "california", "abomination", "discrimination", "personality"
+data "photosynthesis", "syllabication", "Abominable", "marijuana", "Commensalism"
+data "constantinople", "pennsylvania", "serendipity", "organisation", "imagination"
+data "electricity", "exacerbation", "curiosity", "multiplication", "anniversary"
+data "apocalypse", "appreciation", "louisiana", "communication", "acceleration"
+data "everybody", "mummification", "annunciation", "illuminati", "appropriation"
+data "generosity", "excoriation", "trigonometry", "globalisation", "procrastination"
+data "colonisation", "felicitation", "civilisation", "abbreviation", "abracadabra"
+data "deforestation", "exasperation", "depreciation", "gentrification", "extraordinary"
+data "pulchritudinous", "infatuation", "afforestation", "collaboration", "patriotism"
+data "awesomeness", "congratulations", "anticipation", "evacuation", "elimination"
+data "cosanguinity", "confederation", "philadelphia", "schizophrenia", "multiprogramming"
+data "intolerable", "encouragement", "understandable", "opportunity", "sectionalism"
+data "teleprocessing", "degeneration", "kleptomania", "plagiarism", "hypothermia"
+data "supernatural", "asphyxiation", "absenteeism", "thessalonica", "unacceptable"
+data "sagittarius", "equilibrium", "aboriginal", "transubstantiation", "possibilities"
+data "overcomable", "infidelity", "primogeniture", "overachiever", "absentmindedness"
+data "pandemonium", "regimentation", "politician", "aphrodisiac", "expressionism"
+data "animosity", "justification", "cannibalism", "renunciation", "enthusiasm"
+data "disability", "positivity", "astronomica", "equivocation", "sensitivity"
+data "acculturation", "ridiculousness", "metamophosis", "accompaniment", "cornucopia"
+data "abachronism", "extravaganza", "baccalaureate", "hypersomnia", "Stradivarius"
+data "actuality", "juxtaposition", "extrapolation", "tasmania", "arianism"
+data "carnivorousness", "pertinacity", "tyrannosaurus", "esoterica", "michelangelo"
+data "intercalation", "mccarthyism", "teleportation", "gerrymandering", "elaboration"
+data "behaviorist", "mercantilism", "academia", "canonisation", "americana"
+data "abstemiousness", "capitalism", "hypnophobia", "miscegenation", "cordiality"
+data "quadrumvirate", "haberdasheries", "xenophobia", "wyomingite", "wisconsinite"
+data "_endofdata_"
+
+label twosyllablenounsplural
+data "abbots", "zulus", "allies", "teepees", "zombies", "templars", "taboos", "canyons"
+data "aliens", "alerts", "albums", "alarms", "airheads", "airfoils", "affronts"
+data "bravos", "brainstorms", "bloomers", "blindfolds", "beldams", "barhops", "baboons","berserks", "bighorns"
+data "cynics", "cyborgs", "cuttings", "culverts", "cubans", "crabbers", "cockscombs", "clarets", "ciphers", "chaplains", "cedars", "cabers", "cabbies"
+data "deadwoods", "dandies", "daddies", "deviants", "disproofs", "districts", "doorjambs", "doylies", "dragnets", "dropkicks", "dummkopfs", "dutchmen", "dybbuks"
+data "ewes", "evils", "eunuchs", "ethics", "essays", "escorts", "errors", "ergots", "eras", "equals", "epochs", "epees", "entries"
+data "finals", "filmstrips", "fillings", "figments", "fighters", "fiestas", "fiefdoms", "fiddles", "fiches", "fibers", "fezzes", "fevers", "fetters"
+data "garglers", "gardens", "garcons", "gapers", "gantries", "gannets", "gambles", "gallows", "gallnuts", "galleys", "gaiters", "gainers", "gadgets"
+data "hotheads", "hostlers", "hostels", "hornbills", "hoptoads", "hoopsters", "hookahs", "hoofbeats", "hoodlums", "honours", "honkers", "honers", "honchos"
+data "indians", "indies", "inkwells", "inkpots", "inklings", "inkhorns", "inkers", "inkblots", "ingots", "infos", "inflows", "infarcts", "infants"
+data "jemmies", "jennets", "jennies", "jerkers", "jerkins", "jerseys", "jesses", "jesters", "jestings", "jesuits", "jetports", "jetsams", "jetties"
+data "kinfolk", "kingdoms", "kingfish", "kingpins", "kinsmen", "kippers", "kirkmen", "kismets", "kissers", "kitchens", "kittens", "kivas", "klaxons"
+data "lappets", "lapses", "lapwings", "larboards", "larches", "larders", "larkspurs", "larrups", "larvas", "lasers", "lashers", "lassies", "lassos"
+data "markups", "marksmen", "markers", "marbles", "mappers", "mantras", "mantids", "mantas", "manors", "manhunts", "mangoes", "mangers", "mandrills"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "quotas", "quintets", "quibblers", "quarriers", "quakers", "quahaugs", "quacksters"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "wrynecks", "wrenches", "wrasses", "woodwinds", "whooshes", "wherries", "wasters", "washcloths", "warthogs", "warrants", "warpaths", "warlocks", "warheads"
+data "xylems", "xymenes", "xysters"
+data "yanquis", "yardbirds", "yearlings", "yelpers", "yokels", "youngsters", "yuppies"
+data "zlotys", "zombis", "zephyrs", "zebus", "zealots"
+data "_endofdata_"
+
+label threesyllablenounsplural
+data "caracals", "abaci", "abasers", "abbacies", "octopi", "idioms"
+data "canvases", "abattoirs", "abbesses", "octuplets", "incentives"
+data "slaughterers", "analysts", "abiders", "abilities"
+data "auctioneers", "armatures", "amerinds", "acronyms", "acrobats", "accordions", "acclaimers", "abrogators"
+data "bumblers", "bulldogs", "bugles", "bonbons", "boas", "blackguards", "bishops", "birdbrains", "battles", "bandstands", "ballpoints", "backslaps", "backbones"
+data "cypriots", "cyclecars", "cuttlefish", "cupbearers", "cuirasses", "crackerjacks", "codewords", "clergymen", "circuses", "charwomen", "censures", "cadillacs", "cabinets"
+data "dealerships", "damozels", "daffodils", "detectors", "dispersals", "dissenters", "donators", "dovetails", "dragonflies", "dressmakers", "dukedoms", "duplexes", "dysfunctions"
+data "examinees", "evocators", "euphemisms", "eulogies", "estates", "escudos", "escapes", "ermines", "equerries", "equations", "episodes", "epiderms", "envelopes"
+data "firehouses", "firebugs", "firebirds", "fireballs", "firearms", "finishers", "fingertips", "fingerprints", "fingernails", "fingerlings", "fingerboards", "fineries", "financiers"
+data "gestures", "georgians", "gentlefolk", "generals", "gearcases", "gazetteers", "gazelles", "gaucheries", "gatherers", "gateposts", "gatemen", "gastropods", "gargoyles"
+data "hydrators", "hyaenas", "husbandmen", "humorists", "hummingbirds", "humidors", "humdingers", "humanisms", "hubrises", "hovercrafts", "housecoats", "hourglasses", "hothouses"
+data "inspectors", "insisters", "insiders", "insetters", "inserters", "inscribers", "inquirers", "inpatients", "innocents", "innkeepers", "inmates", "inlayers", "inlanders"
+data "jewelers", "jewelries", "jewfishes", "jezebels", "jigaboos", "jimsonweeds", "jingoisms", "jingoists", "jitterbugs", "jiujutsus", "jobholders", "jojobas", "jokesters"
+data "kneadingtroughs", "knuckleheads", "komondors", "kowtowers", "kryoliths", "kymograms", "kabbalahs", "kabukis", "kahunas", "kangaroos", "karakuls", "keelhaulers", "keepsakes"
+data "latherers", "laterals", "latrines", "latvians", "laudators", "laughingstocks", "launderers", "laundrymen", "lavaboes", "lavations", "lavishers", "lawbreakers", "lawgivers"
+data "mastodons", "masterminds", "masseuses", "massagers", "massacrers", "marzipans", "martyrdoms", "martians", "marshmallows", "marriers", "marquesses", "marmosets", "markswomen"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "quaverers", "quaaludes", "quandaries", "quarterdecks", "quaysides", "quickenings", "quintuplets"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "wrynesses", "wrongdoers", "wormholes", "worldbeaters", "woodpeckers", "withdrawals", "wishbones", "whoredoms", "weaknesses", "wavefronts", "watersheds", "waterfronts", "watchtowers", "windowpanes", "winemasters", "winebibbers", "wildebeests"
+data "xmases", "xanthomas", "xeroxes"
+data "yodellers", "yesterdays", "yeshivoth", "yardmasters", "yarmulkes", "yammerers", "yachtswomen"
+data "zinnias", "zoologists", "zoophiles", "zoomorphs", "zucchinis", "ziggurats", "zeppelins"
+data "_endofdata_"
+
+label twosyllableverbs
+data "backfills", "implies", "abducts","backhands","abets"
+data "awaits", "avows", "avoids", "averts", "avails", "authors", "augers"
+data "burthens", "butchers", "breathes", "bounces", "borrows", "bickers", "bevels", "bellows", "begets", "bedecks", "bedamns", "bargains", "backbites", "babbles"
+data "chamfers", "censors", "catnaps", "caters", "captions", "capers", "canters"
+data "combats", "combusts", "comforts", "commits", "coopts", "copies", "cordons", "corrupts", "co-stars", "covets", "cuddles", "curtails", "curves"
+data "dwindles", "duels", "downshifts", "downlinks", "dodders", "disrupts", "directs", "dimples", "defleas", "deducts", "debarks", "darkens", "dallies"
+data "embroils", "embarks", "embalms", "elects", "elbows", "ejects", "effects", "edges", "echoes", "exhorts", "exclaims", "excels", "exceeds"
+data "flexes", "flenses", "fleeces", "flavour", "flatters", "flattens", "flares", "flames", "flakes", "fizzes", "fixes", "fishes", "fires"
+data "gobbles", "gnashes", "glories", "glories", "glitters", "glimpses", "glazes", "glares", "gladdens", "girdles", "gingers", "gibes", "gibbers"
+data "hatches", "hassles", "harrumphs", "harrows", "harbours", "hangeth", "handcuffs", "handcrafts", "hallmarks", "haircuts", "hackles", "hypos", "hypes"
+data "impacts", "imbeds", "idles", "ices", "invests", "inverts", "inures", "intombs", "inters", "insults", "instills", "installs", "inspects"
+data "jollies", "jostles", "jounces", "judders", "judges", "juggles", "juices", "jumbles", "jabbers", "jades", "jailbreaks", "jangles", "jazzes"
+data "kennels", "kidnaps", "kisses", "kneecaps", "kowtows", "kvetches", "keelhauls"
+data "lazes", "lingers", "likens", "lightens", "ligates", "librates", "libels", "levies", "lessens", "leeches", "leavens", "leases", "leaches"
+data "mimics", "mildens", "messes", "merges", "meows", "mentors", "melteth", "mellows", "meddles", "maunders", "matters", "mates", "matches"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "quotes", "quitclaims", "quickens", "questions", "queries", "quarters", "quarrels"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "writhes", "writes", "weewees", "wearies", "whishes", "whinnies", "whiffles", "wheezes", "wheedles", "whammies", "welches", "weathers", "weasels"
+data "yellows", "yodels"
+data "zizzles", "zones"
+data "_endofdata_"
+
+label threesyllableverbs
+data "abandons", "imperils", "overload", "overlooks", "televiews", "canvases"
+data "annexes", "anguishes", "alleges", "alarums", "afforests", "absolves", "abridges"
+data "bemuses", "belittles", "believeth", "belabours", "bedraggles", "bedazzles", "beatifies", "bashes", "barnstorms", "bargains", "banishes", "balances", "backwashes", "backdates"
+data "coheres", "coiffures", "collates", "colludes", "commingles", "compasses", "convulses", "copyrights", "corresponds", "counterclaims", "covenants", "crucifies", "crusades"
+data "disappears", "disaffects", "disables", "denounces", "denatures", "demotes", "demonizes"
+data "declares", "dandifies", "dysfunctions", "downsizes", "domineers", "dissuades", "disrobes", "dilutes", "deflowers", "defiles", "deceives", "debates", "damages"
+data "emerges", "embroiders", "emblazons", "embezzles", "eludes", "elopes", "elongates", "elegises", "elapses", "exiles", "excuses", "excludes", "excises"
+data "forgathers", "forestalls", "foresees", "foregoes", "forefends", "foredooms", "forecasts", "forearms", "forbodes", "forages", "footnotes", "focuses", "flourishes"
+data "gestate", "glorifies", "genuflects", "gazettes", "garottes", "garnishes", "gallivants", "grimaces", "gradates"
+data "housecleans", "horrifies", "hornswoggles", "horsewhips", "honoureth", "honeymoons", "hitchhikes", "hedgehops", "headquarters"
+data "impedes", "impeaches", "impanels", "impales", "immures", "immixes", "imbues", "imbibes", "images", "illumes", "ignores", "ignites", "ideates"
+data "jettisons", "joyrides", "justifies", "jackknifes", "jawbones", "jitterbugs", "jollifies"
+data "kibitzes", "kiboshes"
+data "licenses", "lectures", "landscapes", "lallygags", "lactates", "locates", "liquefies"
+data "misinforms", "mishandles", "misfiles", "misemploys", "misdirects", "misdates", "mischarges", "miscarries", "misbegets", "misapplies", "misadvises", "misadjusts", "ministers"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "quintuples", "quadrates", "qualifies", "quantifies", "quicklimes", "quietens", "quadruples"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "woolgathers", "wiretaps", "welcomes", "waterproofs", "waterlogs", "warrantees", "warmongers", "wallpapers", "witnesses", "wisecracks", "wiredraws", "whitecaps"
+data "xeroxes"
+data "_endofdata_"
+
+label twosyllableverbsplural
+data "canvas", "worship", "imply", "silkscreen", "abhor"
+data "accept", "abut", "attract", "attack", "arrest", "answer", "anoint", "annoy"
+data "blitzkrieg","bootleg", "border", "bottle", "brainwash", "brandish", "brazen", "brevet", "brighten", "bronze", "browse", "buffet", "burgle", "burrow", "bushwack", "bypass"
+data "cache", "cycle", "curdle", "cuddle", "crossbreed", "crochet", "cradle", "confer", "coddle", "coarsen", "cluster", "clodhop", "cleanse"
+data "delist", "dehorn", "defoam", "deepen", "decry", "decoct", "declaim", "debrief", "deadhead", "dawdle", "dangle", "dampen", "dabble"
+data "enter", "ensoul", "enrich", "enjoy", "engraft", "enfold", "endow", "encrypt", "encrust", "enchain", "empty", "employ", "emit"
+data "fritter", "frighten", "freshen", "freeze", "freakout", "frazzle", "founder", "foster", "forward", "forswear", "format", "forgo", "forget"
+data "glisten", "glimpse", "gladden", "girdle", "gimbal", "gentle", "gather", "garner", "garden", "gamble", "gallop", "gainsay", "gaffe"
+data "hurrah", "humbug","hassle", "harrumph", "harrow", "harbour", "handcuff", "handcraft", "hallmark", "heckle"
+data "infer", "indign", "indict", "incur", "incrust", "incept", "incant", "impugn", "impress", "impound", "imply", "impend", "impel"
+data "jolly", "jostle", "judder", "juggle", "jumble", "jabber", "jailbreak", "jangle"
+data "kennel", "kidnap", "kneecap", "kowtow", "keelhaul"
+data "lapse", "lampoon", "lament", "label", "lunge", "lumber", "lube", "looketh", "lollop", "loiter", "lobby", "liven", "litter"
+data "mistrust", "mistreat", "misstep", "misspoke", "misspell", "misspeak", "missort", "misread", "misprint", "misplay", "mismark", "mislead", "mislay"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "quarrel", "queue", "quarter", "question", "quicken", "quiet", "quiver"
+//data "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", ""
+data "writhe", "write", "weewee", "weary", "whinny", "whiffle", "wheedle", "whammy", "weather", "weasel", "wrestle", "wassail", "weaken"
+data "yodel", "yellow"
+data "zigzag"
+data "_endofdata_"
+
+label threesyllableverbsplural
+data "abandon", "impose", "analyse", "abnegate", "abolish", "overload", "overlook", "teleview"
+data "advise", "antique", "arouse", "arrange", "astonish", "automate", "awaken"
+data "beautify", "ballyhoo", "backspace", "bamboozle", "bedizen", "belittle", "benefit", "bespatter", "besprinkle", "bewilder", "blockade", "bludgeon", "boomerang", "boondoggle"
+data "calcify", "cajole", "currycomb", "curate", "culture", "crucify", "create", "condole", "cognise", "coexist", "co-author", "coalify", "co-admit"
+data "delouse", "delete", "degrade", "defuse", "deforest", "define", "deface", "deduce", "decode", "decline", "decide", "decipher", "debase"
+data "embellish", "embargo", "elaborate", "efface", "edify", "eavesdrop"
+data "entice", "enthrone", "enslave", "enrage", "ennoble", "enlist", "engrave", "enframe", "endure", "encourage", "encage", "enamel", "emote"
+data "foresee", "foreknow", "forego", "footnote", "fixate", "firebomb", "finance", "finagle", "filtrate", "feature", "fatigue", "falsify", "frustrate"
+data "gestate", "glorify", "genuflect", "gazette", "garotte", "gallivant", "grimace", "gradate", "gatecrash"
+data "houseclean", "horrify", "hornswoggle", "horsewhip", "honoureth", "honeymoon", "hitchhike", "hedgehop", "headquarter"
+data "inspire", "inscribe", "injure", "initial", "inhume", "inhibit", "inhere", "inhale", "inhabit", "ingather", "infuse", "inflate", "inflame"
+data "jettison", "justify", "jitterbug", "jollify"
+data "license", "lecture", "landscape", "lallygag", "lactate", "locate", "liquefy"
+data "mutiny", "mutate", "mummify", "multitask", "multicast", "muckrake", "mortgage", "moralize", "monitor", "monetize", "modify", "misuse", "mistype"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "quadrate", "qualify", "quantify", "quickstep", "quintuple", "quieten", "quantize"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "woolgather", "wiretap", "welcome", "waterproof", "waterlog", "warrantee", "warmonger", "wallpaper", "wisecrack", "wiredraw", "whitecap"
+data "_endofdata_"
+
+label onesyllableverbsplural
+data "tack", "beat", "bed", "beep", "beg", "gel", "sin", "bend", "bet", "blush", "burst"
+data "blitz", "blip", "blind", "blend", "bleep", "bleed", "blab", "bin", "bilk", "bid"
+data "deal", "cite", "churn", "chirp", "chill", "char", "catch", "blur", "block", "bloat"
+data "drift", "dreg", "draw", "drag", "don", "doff", "dig", "dial", "dent", "dean", "brag"
+data "feign", "feel", "feed", "farm", "fan", "fall", "fail", "end", "blink", "blow" , "burp"
+data "grind", "grill", "grasp", "gain", "gag", "fry", "frisk", "free", "form", "fool"
+data "ship", "sheer", "seek", "smell", "hear", "see", "seat", "scrap", "rend", "rear"
+data "yowl", "yip", "yield", "yuk", "zip", "zoom", "zag", "zig", "arm", "aid", "build"
+data "aim", "air", "arc", "ask", "quip", "quit", "bale", "ban", "bar", "bask", "bat", "bell"
+data "clean", "claim", "churn", "chop", "chill", "chant", "cask", "cart", "carp", "cap", "can", "call", "calk"
+data "ebb", "eat", "dry", "drink", "dart", "dash"
+data "flail", "fizz", "fix", "fit", "find", "fill", "feint", "feign", "feel", "fear", "fax"
+data "gyp", "gush", "guess", "grunt", "grub", "grin", "grip", "grow", "greet", "graft", "go", "gnaw", "glow"
+data "heat", "hear", "heap", "heal", "haw", "haul", "hath", "harp", "hang", "halt", "hail", "had", "hack"
+data "jab", "jail", "jam", "jar", "jeer", "jell", "jerk", "jet", "jig", "jilt", "jinx", "jog", "join"
+data "kart", "keep", "ken", "kern", "kick", "kid", "kill", "kiss", "kneel", "knit", "knock", "know", "knurl"
+data "limp", "lift", "lie", "let", "learn", "lean", "leak", "lead", "lay", "laugh", "lash", "lap", "land"
+data "mill", "miff", "mesh", "melt", "meet", "match", "mask", "mash", "mark", "mar", "make", "maim", "mail"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "wrap", "wow", "woof", "whelp", "want", "ward", "warm", "warn", "watch", "wait", "wax", "wear", "weep"
+data "_endofdata_"
+
+label onesyllableadjectives
+data "blue", "odd", "worst", "few", "bent", "best","red", "brown", "black", "pink", "dead"
+data "green", "dean", "blind", "deaf", "blent", "blest", "blank", "bland", "bind", "big"
+data "fresh", "free", "frank", "frail", "fond", "fat", "fast", "far", "fair", "drab"
+data "raw", "rash", "rank", "low", "lax", "hot", "grim", "grey", "fund", "full", "brief"
+data "worn", "full", "tart", "slim", "slick", "shy", "sent", "scrap", "torn", "real"
+data "built", "bluff", "blunt", "brisk", "bright", "bad", "quick", "all", "aft", "young", "born", "boss", "boy"
+data "crass", "crap", "crack", "cloth", "cheap"
+data "dull", "due", "dry","dark", "dank"
+data "grim", "green", "greek", "grown", "great", "grand", "gruff", "good", "gnawn", "glib", "glad", "gold", "gilt", "gay", "grey"
+data "hit", "hep", "hip", "hind", "hick", "hex", "heard", "Hun", "ham", "half", "hot"
+data "ill"
+data "key", "king", "kitsch", "known", "keen"
+data "limp", "lax", "low", "loud", "lost", "light", "limp"
+data "mum", "most", "mod", "moot", "mixt", "misc", "mid", "meek", "mean", "matt", "main", "mad"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "quick"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "wry", "wrong", "worst"
+data "_endofdata_"
+
+label twosyllableadjectives
+data "synched", "shrimpy", "inept", "pearly", "pebbly", "swirly", "caput","able","silken", "sane"
+data "anglo", "alien", "alert", "airless", "adroit", "abstract", "abrupt"
+data "banshee", "barmy", "berber", "beta", "bibless", "blondish", "boggling", "boring", "boyish", "broader", "broken", "bumbling", "bushier", "buxom"
+data "crystal", "cryptic", "coral", "coital", "codal", "coastal", "clonal", "choral", "central", "caudal", "causal", "carnal"
+data "dwarfed", "dusty", "durndest", "dullish", "dryest", "drugged", "droller", "drilled", "dreary", "dreaded", "doubtful", "doting"
+data "earnest", "eager", "extra", "extinct", "extant", "expert", "evil", "even", "ethnic", "errant", "ernest", "erect", "equal"
+data "fearful", "fatal", "faster", "fanged", "fancy", "fallow", "faked", "fairest", "faintest", "failed", "faded", "faddish", "factful"
+data "grieving", "grinning", "grizzled", "groomed", "grossest", "grouted", "grownup", "gruntled", "guarded", "guilty", "gutted", "guzzled", "gyral"
+data "hokey", "hipper", "hilted", "highbrow", "herded", "helpless", "heinous", "hefty", "heeded", "heckled", "heaving", "heathy", "heathen", "has-been"
+data "inner", "inky", "inkless", "inked", "infirm", "infant", "illest", "idle", "ideal", "iced", "iambic"
+data "jaded", "jagged", "jagless", "jailed", "jangled", "jangling", "jangly", "jaunted", "jaunty", "jawless", "jazzy", "jealous", "jellied"
+data "kansan", "keeled", "keltic", "kerbed", "keyed", "kibbled", "kicking", "kidding", "kindest", "kindly", "kingless", "kinkier", "kirtled"
+data "leaner", "leafy", "leaden", "lawless", "lavish", "laved", "lasting", "larger", "lapsed", "languid", "landless", "lamest", "laden"
+data "marked", "marbled", "mapped", "mantled", "manned", "mangled", "maned", "malted", "maimed", "mailed", "maced", "measly", "mere"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "quirky", "quippish", "queenly", "queasy", "quasi", "quaggy", "quackier"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "wryest", "wrothful", "wrinkled", "wetter", "wheaten", "whelming", "whirled", "whistling", "whiter", "winking", "wincing", "wily", "wigged"
+data "xanthic", "xyloid"
+data "yummy", "yoked", "yogic", "yellow"
+data "zesty", "zestful", "zebroid"
+data "_endofdata_"
+
+label threesyllableadjectives
+data "overlong", "abashed", "zygotic", "zippered", "immoral", "incensed"
+data "teetotal", "immortal", "inert", "infernal", "abducted", "abiotic"
+data "captured", "insane", "abnormal", "fantastic", "generic", "genial"
+data "avenging", "audible", "atonal", "archducal", "anointed", "annealed", "animist"
+data "barefoot", "bespangled", "betrothed", "biforked", "bloodthirsty", "bombastic", "bottommost", "bourgeois", "brocaded", "bronchial", "browbeaten", "burnable", "butterier", "bypassed"
+data "clinical", "clerical", "classical", "circuital", "chemical", "cerebral", "casual", "cardinal", "cantonal", "cannibal", "cameral", "caliphal", "caesural"
+data "duplexed", "duteous", "durable", "dumfounded", "duelling", "drowsiest", "droopiest", "downsized", "coctrinal", "doable", "discounted", "datable", "damnable"
+data "explicit", "expelled", "exotic", "excited", "excelling", "euphoric", "ethical", "erratic", "eroded", "erased", "envision", "entwisted", "entire"
+data "filagreed", "fermented", "febrile", "fatuous", "farrowed", "farfetched"
+data "gluttonous", "gnawable", "goodlier", "gossamer", "governed", "graceful", "gradated", "granular", "graphical", "grassiest", "gratified", "graveled", "grecian"
+data "humored", "humanest", "hulloed", "huggable", "huckstering", "hotblooded", "hostessed", "hortative", "horrified", "horrible", "hornswoggled", "hooknosed", "honestest"
+data "immersed", "imbued", "imbedded", "imaged", "illumed", "illicit", "illegal", "ignored", "ignified", "iffiest", "idyllic", "ickier", "iciest"
+data "jellified", "jeoparded", "jeweled", "jiggered", "jigglier", "jiggliest", "jigsawed", "jigsawing", "jinglier", "jingliest", "jittery", "jockeyed", "joinable"
+data "kantian", "karachi", "kashmiri", "kerneled", "kidnapped", "kindhearted", "kinetic", "kittened", "klutzier", "kindliest", "kinkiest", "knobbiest", "knottiest"
+data "leapfrogged", "leanfleshed", "lazier", "lawyerly", "lardiest", "landscaped", "lamented", "lamebrain", "lambasted", "laggardly", "lactating", "lackeyed", "labeled"
+data "marketed", "margined", "mannered", "manhandled", "mandated", "manacled", "maligned", "malformed", "mainlined", "magicked", "magnified", "maddened", "machined"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "quiescent", "querulous", "quenchable", "quarrelling", "quotable", "quizzical", "quixotic"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "wrinkliest", "wraparound", "wireless", "winnable", "wetsuited", "westernmost", "workable", "wordiest", "womanish", "withholden", "wispier", "wintriest", "winsome"
+data "yeasty", "youthened"
+data "xeroxed"
+data "_endofdata_"
+
+label twosyllableadverbs
+data "truly", "oddly", "gladly", "badly", "ably", "archly", "idly", "tautly"
+data "slackly", "aptly", "numbly", "partly", "patly", "subtly", "sweetly"
+data "swiftly", "tartly", "vainly", "vastly", "yearly", "waggly", "wanly"
+data "wrongly", "wildly", "weakly", "warmly", "weirdly", "wetly"
+data "blandly", "blackly", "quaintly", "quickly", "wryly", "briefly", "boldly", "bluntly", "bleakly", "blankly"
+data "curtly", "coyly", "coldly", "coolly", "chiefly", "cheaply"
+data  "deftly", "deeply", "deadly", "dankly", "damply", "daily", "daftly"
+data "early", "earthly"
+data "fully", "freely", "frankly", "frailly", "foully", "flatly", "firmly", "feebly", "fatly", "fairly", "faintly"
+data "gruffly", "grossly", "grimly", "grandly", "glumly", "glibly", "gladly", "gently", "gauntly", "gaily"
+data "hackly", "haply", "harshly", "highly", "hotly", "hourly", "humbly", "haily"
+data "idly"
+data "jiggly", "jingly", "jointly", "jungly", "justly"
+data "keenly"
+data "lowly", "loudly", "longly", "lilly", "leanly", "laxly", "lastly", "lairdly", "loathly", "limply", "lightly", "liefly", "lewdly"
+data "muscly", "monthly", "moistly", "mildly", "meekly", "meanly", "mainly", "madly"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "wryly", "wrongly", "wanly", "weekly"
+data "_endofdata_"
+
+label threesyllableadverbs
+data "jabbingly", "jadedly", "jadishly", "jaggedly", "japingly", "jarringly", "jauntily", "jazzily", "jealously", "jeeringly", "jerkily", "jibingly", "jocundly"
+data "kiddingly", "kinkily", "kissably", "knavishly", "knottily", "knowingly"
+data "locally", "lividly", "livably", "lithely", "liquidly", "licitly", "levelly", "lethally", "lengthily", "legibly", "legally", "leewardly", "leerily"
+data "messily", "merrily", "mentally", "meltingly", "mellowly", "mazily", "mawkishly", "masterly", "markedly", "mannishly", "mangily", "manfully", "madcaply"
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+//data "", "", "", "", "", "", "", "", "", "", "", "", ""
+data "tryingly", "flauntingly", "wontedly","ineptly", "inertly", "infirmly"
+data "silently", "abjectly", "abruptly", "absently", "abstractly", "absurdly"
+data "sinfully", "acidly", "acridly", "adeptly", "adroitly", "affably", "airily"
+data "sinlessly", "alertly", "alienly", "aloofly", "angrily", "apishly", "ardently"
+data "arrantly", "artfully", "astrally", "audibly", "augustly", "baldly", "balmily"
+data "banally", "barely", "humidly","hungrily", "icily", "ideally", "ignobly"
+data "inaptly", "nosily", "nuttily", "oafishly", "openly", "ovally", "owlishly"
+data "palely", "pallidly", "paltrily", "peppily", "supplely", "sveltely", "tangibly"
+data "papally", "patently", "peevishly", "superbly", "tackily", "tamely", "tardily"
+data "parlously", "sulkily", "surely", "sweatily", "tacitly", "tastily", "taxably"
+data "patchily", "sunnily", "swankily", "tawdrily", "tearfully", "teasingly"
+data "untiringly", "uprightly", "upwardly", "urbanely", "urgently", "usefully", "utterly"
+data "venally", "variedly", "vapidly", "validly", "vaguely", "vagrantly", "vacantly"
+data "venially","verdantly", "verbally", "ventrally"
+data "airlessly", "aimlessly", "aimfully", "aguishly", "aerily", "adjunctly", "achingly", "anciently", "armlessly", "artlessly", "aurally", "avidly", "awfully", "awkwardly"
+data "blatantly", "blamably", "bitterly", "bitingly", "beefily", "bearably", "beadily", "backwardly", "bawdily", "bashfully", "basely", "basally", "barrenly", "balkily", "baggily"
+data "cordlessly", "compactly", "chidingly", "cheesily", "cheerfully", "cheekily", "centrally", "chastely", "charily", "chancily", "certainly", "cagily", "caddishly"
+data "deathlessly", "dazedly", "daringly", "dapperer", "damnably", "daintily"
+data "expressly", "expertly", "exactly", "evenly", "erringly", "erectly", "equally", "elfishly", "elderly", "eerily", "eastwardly", "easily"
+data "fiendishly", "feudally", "fervidly", "fervently", "fecklessly", "feasibly", "fawningly", "fatherly", "fatally", "famously", "falsely", "fallibly", "fadedly"
+data "gloomily", "gleefully", "glancingly", "giftedly", "giddily", "gawkily", "gauzily", "gaudily", "gauchely", "garishly", "gamely", "gallantly", "gainfully"
+data "handily", "haplessly", "happily", "hardily", "hardly", "hastily", "haughtily", "hazily", "helplessly", "huffily", "hornily", "heedlessly", "heavily"
+data "quotably", "quirkily", "quietly", "qualmishly", "quakingly", "quackishly", "quakily"
+data "watchfully", "waspishly", "waspily", "warily", "wantonly", "wailfully"
+data "wackily", "waterily", "wavily", "waxily", "waywardly", "wearily"
+data "weaselly", "weedily", "weevilly", "weightily", "weightlessly"
+data "westerly", "westwardly", "wheezily", "whiningly", "wickedly", "widely"
+data "wilfully", "willfully", "willingly", "windily", "wingedly"
+data "winningly", "winterly", "wintrily", "wirily", "wisely", "wishfully"
+data "wispily", "wistfully", "witlessly", "wittily", "wittingly", "wizardly"
+data "woefully", "wondrously", "woodenly", "wooingly", "woozily", "wordily"
+data "wordlessly", "worriedly", "worthily", "worthlessly", "woundingly"
+data "wrongfully", "writhingly", "wretchedly", "wrathfully"
+data "youthfully", "yeomanly", "yellowly", "yeastily", "yearningly"
+data "zonally", "zestfully", "zealously", "zanily"
+data "_endofdata_"
+

@@ -1,0 +1,34 @@
+sub structure2()
+	//Haiku structure
+	//5 nounnouns verbverbverb
+	//7 All the nounnouns verbverbverb
+	//5 I verb the nounnoun
+
+	//first line
+	restore  twosyllablenounsplural
+	a$= getdata$() + " "
+	left$(a$, 1) = upper$(left$(a$, 1))
+	restore threesyllableverbsplural
+	a$ = a$ + getdata$() + "\n"
+	
+	//second line
+	b$ = "All the "
+	restore  twosyllablenounsplural
+	b$= b$ + getdata$() + " "
+	restore threesyllableverbsplural
+	b$ = b$ + getdata$() + "\n"
+	
+	//third line
+	c$ = "I "
+	restore onesyllableverbsplural
+	c$= c$ + getdata$() + " the "
+	restore  twosyllablenouns
+	c$= c$ + getdata$() + "."
+	
+	//concatenate	
+	d$= a$ + b$ + c$
+	print d$
+	
+	end
+end sub
+

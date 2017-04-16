@@ -1,0 +1,6 @@
+sub RandInt0To9()
+	//returns a random integer between 0 and 9, inclusive
+	a=val(mid$(time$, 8,1))
+	return a
+end sub
+

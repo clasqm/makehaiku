@@ -1,0 +1,10 @@
+#!/bin/sh
+cd /boot/home/projects/makehaiku/PackagingFolder
+package create -b makehaiku_0.1-7_gcc2.hpkg
+sleep 0.5
+package add makehaiku_0.1-7_gcc2.hpkg data bin
+sleep 0.5
+addattr BeShare:Info "A CLI utility that writes haiku poetry" makehaiku_0.1-7_gcc2.hpkg
+becopy makehaiku_0.1-7_gcc2.hpkg "/Storage/Haiku/My ports"
+mv makehaiku_0.1-7_gcc2.hpkg /boot/home/projects/repo
+sync

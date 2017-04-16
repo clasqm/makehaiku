@@ -1,0 +1,37 @@
+sub structure4()
+	local a$, b$, c$, d$
+	//Haiku structure:
+	//5 No nounnoun verbverbs
+	//7 We verbverbverb advadvadv
+	//5 verbverb advadvadv!
+	
+	//first line
+	a$="No "
+	restore  twosyllablenouns
+	a$ = a$ + getdata$() + " "
+	restore  twosyllableverbs
+	a$ = a$ + getdata$() + "\n"
+
+	//second line
+	b$="We "
+	restore  threesyllableverbsplural
+	b$ = b$ + getdata$() + " "
+	restore  threesyllableadverbs
+	b$ = b$ + getdata$() + "\n"
+
+	
+	//third line
+	restore  twosyllableverbsplural
+	c$ = c$ + getdata$() + " "
+	left$(c$, 1) = upper$(left$(c$, 1))
+	restore  threesyllableadverbs
+	c$ = c$ + getdata$() + "!"
+	
+
+	//concatenate	
+	d$= a$ + b$ + c$
+	print d$
+	
+	end
+end sub
+

@@ -1,0 +1,51 @@
+sub structure1()
+	local a$, b$, c$, d$
+	//Haiku structure:
+	//5 A nounnoun verbverbs
+	//7 adjadj nounnouns verb advadv
+	//5 the nounnoun verbverbs
+	
+	//first line
+	restore  twosyllablenouns
+	a$ = getdata$()
+	//decide A or An
+	switch left$(a$, 1)
+		case "a"
+		case "e"
+		case "i"
+		case "o"
+		case "u"
+		a$ = "An " + a$ + " "
+		break
+		default
+		a$ = "A " + a$ + " "
+		break
+	end switch
+	restore twosyllableverbs
+	a$ = a$ + getdata$() + "\n"
+	
+	// second line
+	restore twosyllableadjectives
+	b$ = getdata$() + " "
+	left$(b$, 1) = upper$(left$(b$, 1))
+	restore twosyllablenounsplural
+	b$ = b$ + getdata$() + " "
+	restore onesyllableverbsplural
+	b$ = b$ + getdata$() + " "
+	restore twosyllableadverbs
+	b$ = b$ + getdata$()+ "\n"
+	
+	//third line 
+	c$ = "The " 
+	restore  twosyllablenouns
+	c$ = c$ + getdata$() + " "
+	restore twosyllableverbs
+	c$ = c$ + getdata$() + "."
+
+	//concatenate	
+	d$= a$ + b$ + c$
+	print d$
+	
+	end
+end sub
+

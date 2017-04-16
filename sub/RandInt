@@ -1,0 +1,6 @@
+sub RandInt()
+	//returns a random integer between 0 and 32767
+	a = val(system$("echo $RANDOM"))
+	return a
+end sub
+

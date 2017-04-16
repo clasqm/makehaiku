@@ -1,0 +1,16 @@
+#!yab
+############# Prologue #############
+
+ 
+//*****Global Variables****
+ 
+DEBUG = 0
+counter =1 
+ 
+######Preliminary Commands#####
+if peek("argument") <> 0 givehelp()
+if peek$("refsreceived") <> "" givehelp()
+if peek("argument") <> 0 then
+	givehelp()
+endif
+
