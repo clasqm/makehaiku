@@ -1,4 +1,5 @@
-makehaiku
+# makehaiku
+
 by Michel Clasquin-Johnson
 
 Written in yab using the Yabadabbadoo IDE
@@ -12,3 +13,7 @@ That was easy enough. What is taking up time is adding sufficient words to its d
 I haven't tried it yet, but the code should work in yabasic for Windows or Linux.
 
 This code is released into the Public Domain.
+
+Get it here: https://github.com/clasqm/makehaiku
+
+Binaries: https://sourceforge.net/p/makehaiku-for-haiku/
